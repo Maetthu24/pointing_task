@@ -14,7 +14,7 @@ body {
 
 .tablet-inner-edge {
 	position: absolute;
-	height: calc(90% - 50px);
+	height: calc(90% - 12px);
 	width: 90%;
 	margin: 50px 5%;
 	background-color: white;
