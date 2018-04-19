@@ -2,9 +2,9 @@
 var buttons = document.querySelectorAll(".button");
 
 var experiment = [
-	[1,2,3,4,5,6],
-	[1,12,6,7],
-	[1,7,2,8,3,9]
+	[1,2,3,4,5,6,13],
+	[1,12,6,7,13],
+	[1,7,2,8,3,9,13]
 ]
 
 var participant = prompt("Enter Participant ID:", "0"); //id of the participant
@@ -22,7 +22,8 @@ var numberOfClicks = 0;
 var lastHit = getActualTime();
 
 // Highlite the first target at the beginning
-hightlightNextTarget();
+//hightlightNextTarget();
+highliteStart()
 
 // Add click listeners to all buttons
 for (var i = 0; i < buttons.length; i++) {
@@ -31,6 +32,9 @@ for (var i = 0; i < buttons.length; i++) {
 
 		// If the button is a target, a new target is selected
 		if(this.classList.contains("target")) {
+			if(this.classList.contains("start")){
+				this.classList.remove("start");
+			}
 			var actualDate = getActualTime()
             clicksText += participant;
             clicksText += ";" + condition;
@@ -55,7 +59,9 @@ for (var i = 0; i < buttons.length; i++) {
 				    // start new sequence
 					block += 1;
 					numberOfClicks = 0;
-                    hightlightNextTarget();
+                    setTimeout(highliteStart, 2000);
+					//highliteStart();
+                    //hightlightNextTarget();
 				}
 			} else {
 				hightlightNextTarget();
@@ -102,4 +108,11 @@ function hightlightNextTarget(){
 
     buttonToHighlight.classList.add("target");
     numberOfClicks += 1;
+}
+function highliteStart(){
+    var buttonId = "but13";
+    var buttonToHighlight = document.querySelector("#but13");
+
+    buttonToHighlight.classList.add("target");
+    buttonToHighlight.classList.add("start");
 }
