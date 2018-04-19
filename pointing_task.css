@@ -22,8 +22,8 @@ body {
 
 .top-buttons {
 	display: grid;
-	grid-template-columns: 15% 15% 15% 15% 15% 15%;
-  	grid-gap: 2px;
+	grid-template-columns: calc(100%/6) calc(100%/6) calc(100%/6) calc(100%/6) calc(100%/6) calc(100%/6);
+  	grid-gap: 0px;
   	align-items: center;
   	justify-content: center;
   	margin: 0px;
@@ -35,8 +35,8 @@ body {
     position: absolute;
     bottom: 0px;
     display: grid;
-    grid-template-columns: 15% 15% 15% 15% 15% 15%;
-    grid-gap: 2px;
+	grid-template-columns: calc(100%/6) calc(100%/6) calc(100%/6) calc(100%/6) calc(100%/6) calc(100%/6);
+	grid-gap: 0px;
     align-items: center;
     justify-content: center;
     margin: 0px;
