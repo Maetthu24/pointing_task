@@ -7,9 +7,9 @@ var experiment = [
 	[1,7,2,8,3,9,13]
 ]
 
-var participant = prompt("Enter Participant ID:", "0"); //id of the participant
+var participant = 0; //prompt("Enter Participant ID:", "0"); //id of the participant
 // Have to get set according to an input file and the participant id
-var condition = 0; //screen edge or not, out of input file
+var condition = 0; // prompt("Enter condition: 0 = screen edge, 1 = extended edge") //screen edge or not, out of input file
 var block = 0; // id of the sequence
 
 //Header of the output file
@@ -23,7 +23,7 @@ var lastHit = getActualTime();
 
 // Highlite the first target at the beginning
 //hightlightNextTarget();
-highliteStart()
+highlightStart()
 
 // Add click listeners to all buttons
 for (var i = 0; i < buttons.length; i++) {
@@ -59,8 +59,8 @@ for (var i = 0; i < buttons.length; i++) {
 				    // start new sequence
 					block += 1;
 					numberOfClicks = 0;
-                    setTimeout(highliteStart, 2000);
-					//highliteStart();
+                    setTimeout(highlightStart, 2000);
+					//highlightStart();
                     //hightlightNextTarget();
 				}
 			} else {
@@ -88,11 +88,6 @@ function saveTextAsFile(textToSave) {
     downloadLink.click();
 }
 
-function getActualTime(){
-    var date = new Date();
-    return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds());
-}
-
 // Copied from https://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
 function destroyClickedElement(event) {
     document.body.removeChild(event.target);
@@ -100,18 +95,23 @@ function destroyClickedElement(event) {
 
 // Helper functions
 
-// Highlites the next target in the serie
-function hightlightNextTarget(){
+function getActualTime(){
+    var date = new Date();
+    return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds());
+}
 
-    var buttonId = "but" + experiment[block][numberOfClicks];
+// Highlites the next target in the serie
+function hightlightNextTarget() {
+
+    var buttonId = "but-" + experiment[block][numberOfClicks];
     var buttonToHighlight = document.querySelector("#" + buttonId);
 
     buttonToHighlight.classList.add("target");
     numberOfClicks += 1;
 }
-function highliteStart(){
-    var buttonId = "but13";
-    var buttonToHighlight = document.querySelector("#but13");
+
+function highlightStart() {
+    var buttonToHighlight = document.querySelector("#but-13");
 
     buttonToHighlight.classList.add("target");
     buttonToHighlight.classList.add("start");
