@@ -1,10 +1,13 @@
 // Select all buttons
-var buttons = document.querySelectorAll(".button");
+var buttons = document.querySelectorAll('[id^=\'but\']');
 
 var experiment = [
-	[1,2,3,4,5,6,13],
+	/*[1,2,3,4,5,6,13],
 	[1,12,6,7,13],
-	[1,7,2,8,3,9,13]
+	[1,7,2,8,3,9,13],*/
+    [1,2,3,14,15,16,13],
+    [14,12,6,17,18,13],
+    [14,19,20,21,13],
 ]
 
 var participant = 0; //prompt("Enter Participant ID:", "0"); //id of the participant
