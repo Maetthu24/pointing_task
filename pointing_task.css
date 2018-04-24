@@ -65,7 +65,7 @@ body {
     margin-top: 10px;
 }
 
-.centeredButton{
+.centeredButton {
     background-color: #a5a5a5;
     text-align: center;
     height: 120px;
@@ -92,7 +92,7 @@ body {
     margin-top: 25px;
 }
 
-.middle-buttons{
+.middle-buttons {
     width: 100%;
     height: 50px;
     position: absolute;
@@ -103,6 +103,7 @@ body {
     justify-content: center;
     margin: 0px;
 }
+
 .informations {
     width: 100%;
     text-align: center;
@@ -164,6 +165,11 @@ body {
 .target {
 	background-color: red;
 }
+
 .start {
     background-color: green;
+}
+
+.hide {
+    display: none;
 }

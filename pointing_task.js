@@ -1,13 +1,11 @@
 // Select all buttons
 var buttons = document.querySelectorAll('[id^=\'but\']');
+var startButton = document.querySelector('#but-start');
 
 var experiment = [
-	/*[1,2,3,4,5,6,13],
-	[1,12,6,7,13],
-	[1,7,2,8,3,9,13],*/
-    [1,2,3,14,15,16,13],
+    [1,2,3],
     [14,12,6,17,18,13],
-    [14,19,20,21,13],
+    [14,19,20,17]
 ]
 
 var participant = 0; //prompt("Enter Participant ID:", "0"); //id of the participant
@@ -16,61 +14,88 @@ var condition = 0; // prompt("Enter condition: 0 = screen edge, 1 = extended edg
 var block = 0; // id of the sequence
 
 //Header of the output file
-var clicksText = "Part;Cond;Block;Click;Tar_t;Click_t;PosX;PosY;Dist;Succ\n";
+var outputText = "Part;Cond;Block;Click;Tar_t;Click_t;PosX;PosY;Dist;Succ\n";
 
 // Clicks performed in the actual sequence
-var numberOfClicks = 0;
+var clicksCounter = 0;
 
 // Temporarly saves the last hit for calculating the difference
 var lastHit = getActualTime();
 
-// Highlite the first target at the beginning
-//hightlightNextTarget();
-highlightStart()
+var isBetweenBlocks = true;
 
-// Add click listeners to all buttons
-for (var i = 0; i < buttons.length; i++) {
+// Highlite the start button at the beginning
+highlightStart();
 
-	buttons[i].addEventListener("click", function(event) {
+// Add event listener to body
+document.body.addEventListener("click", handleBodyClick);
 
-		// If the button is a target, a new target is selected
-		if(this.classList.contains("target")) {
-			if(this.classList.contains("start")){
-				this.classList.remove("start");
-			}
-			var actualDate = getActualTime()
-            clicksText += participant;
-            clicksText += ";" + condition;
-            clicksText += ";" + block;
-            clicksText += ";" + numberOfClicks;
-			clicksText += ";" + actualDate;
-			clicksText += ";" + lastHit;
-			clicksText += ";" + event.clientX;
-			clicksText += ";" + event.clientY;
-            clicksText += ";" + "NaN"; // TODO difference between input and target center
-			clicksText += ";" + "1";
-			clicksText += "\n";
-			this.classList.remove("target");
-			lastHit = getActualTime();
+function handleBodyClick(event) {
 
-			// Download File at the end of the programm
-			if(numberOfClicks >= experiment[block].length) {
-				if((block + 1) >= experiment.length){
-                    saveTextAsFile(clicksText);
-				}
-				else{
-				    // start new sequence
-					block += 1;
-					numberOfClicks = 0;
-                    setTimeout(highlightStart, 2000);
-					//highlightStart();
-                    //hightlightNextTarget();
-				}
-			} else {
-				hightlightNextTarget();
-			}
+	var clickedElement = document.elementFromPoint(event.clientX, event.clientY);
+	console.log("click registered at " + event.clientX + "/" + event.clientY);
+
+	if(isBetweenBlocks) {
+
+		// If user is currently between 2 experiment blocks, only react to start button
+		if(clickedElement == startButton) {
+			startButton.classList.remove("start");
+			startButton.classList.remove("target");
+			isBetweenBlocks = false;
+			highlightNextTarget();
 		}
-	});
+
+	} else {
+
+		removeOldTarget();
+
+		writeClickToOutputFile(event.clientX, event.clientY, "1");
+
+		if(experimentIsFinished()) {
+			document.body.removeEventListener("click", handleBodyClick);
+			downloadOutputFile();
+		} else if(blockIsFinished()) {
+			highlightEndButtonOrStartNewBlock();
+		} else {
+			highlightNextTarget();
+		}
+
+	}
+	
+}
+
+function experimentIsFinished() {
+	return (block == experiment.length - 1 && blockIsFinished());
+}
+
+function blockIsFinished() {
+	return (clicksCounter >= experiment[block].length);
+}
+
+function startNewBlock() {
+	block += 1;
+	clicksCounter = 0;
+	setTimeout(highlightStart, 2000);
+}
+
+function writeClickToOutputFile(x, y, success) {
+	var actualTime = getActualTime();
+    outputText += participant;
+    outputText += ";" + condition;
+    outputText += ";" + block;
+    outputText += ";" + clicksCounter;
+	outputText += ";" + actualTime;
+	outputText += ";" + lastHit;
+	outputText += ";" + x;
+	outputText += ";" + y;
+    outputText += ";" + "NaN"; // TODO difference between input and target center
+	outputText += ";" + success;
+	outputText += "\n";
+	lastHit = actualTime;
+}
+
+function downloadOutputFile() {
+	saveTextAsFile(outputText);
 }
 
 // Copied from https://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
@@ -103,19 +128,43 @@ function getActualTime(){
     return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds());
 }
 
+function removeOldTarget() {
+	var oldTarget = document.querySelector(".target");
+	if(oldTarget != null) {
+		oldTarget.classList.remove("target");
+	} else {
+		console.log("tried to remove target too many times");
+	}
+}
+
 // Highlites the next target in the serie
-function hightlightNextTarget() {
+function highlightNextTarget() {
+    var buttonId = "but-" + experiment[block][clicksCounter];
+    var newTarget = document.querySelector("#" + buttonId);
 
-    var buttonId = "but-" + experiment[block][numberOfClicks];
-    var buttonToHighlight = document.querySelector("#" + buttonId);
-
-    buttonToHighlight.classList.add("target");
-    numberOfClicks += 1;
+    newTarget.classList.add("target");
+    clicksCounter += 1;
 }
 
 function highlightStart() {
-    var buttonToHighlight = document.querySelector("#but-13");
+	startButton.classList.remove("hide");
+    startButton.classList.add("target");
+    startButton.classList.add("start");
+}
 
-    buttonToHighlight.classList.add("target");
-    buttonToHighlight.classList.add("start");
+
+var endButtonHighlighted = false;
+
+function highlightEndButtonOrStartNewBlock() {
+
+	if(!endButtonHighlighted) {
+		startButton.classList.add("target");
+		endButtonHighlighted = true;	
+	} else {
+		endButtonHighlighted = false;
+		isBetweenBlocks = true;
+		startButton.classList.add("hide");
+		startNewBlock();
+	}
+
 }
