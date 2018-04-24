@@ -3,9 +3,16 @@ var buttons = document.querySelectorAll('[id^=\'but\']');
 var startButton = document.querySelector('#but-start');
 
 var experiment = [
-    [1,2,3],
-    [14,12,6,17,18,13],
-    [14,19,20,17]
+    [1,11,6,16],
+    [20,10,17,7],
+	[2,3,4,5],
+	[15,14,13,12],
+	[20,19,18,17],
+	[7,8,9,10],
+	[1,16,2,15],
+	[11,6,12,5],
+	[20,7,19,8],
+	[10,17,9,18]
 ]
 
 var participant = 0; //prompt("Enter Participant ID:", "0"); //id of the participant
