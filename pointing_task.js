@@ -58,9 +58,7 @@ function handleBodyClick(event) {
 
 	} else {
 
-		var success = getSuccessFlagForClickAt(event.clientX, event.clientY);
-
-		writeClickToOutputFile(event.clientX, event.clientY, success);
+		writeClickToOutputFile(event.clientX, event.clientY);
 
 		removeOldTarget();
 
@@ -110,6 +108,19 @@ function getSuccessFlagForClickAt(x, y) {
 	
 }
 
+function getDistanceToTargetCenter(x, y) {
+
+	var targetRect = getCurrentTargetElement().getBoundingClientRect();
+	var targetCenterX = targetRect.left + targetRect.width / 2;
+	var targetCenterY = targetRect.top + targetRect.height / 2;
+
+	var distanceSquared = (targetCenterX - x) * (targetCenterX - x) + (targetCenterY - y) * (targetCenterY - y);
+	var distance = Math.sqrt(distanceSquared);
+
+	return distance;
+
+}
+
 function getCurrentTargetElement() {
 	return document.querySelector(".target");
 }
@@ -128,8 +139,11 @@ function startNewBlock() {
 	setTimeout(highlightStart, 2000);
 }
 
-function writeClickToOutputFile(x, y, success) {
+function writeClickToOutputFile(x, y) {
 	var actualTime = getActualTime();
+	var success = getSuccessFlagForClickAt(x, y);
+	var distance = getDistanceToTargetCenter(x, y);
+
     outputText += participant;
     outputText += ";" + condition;
     outputText += ";" + block;
@@ -138,9 +152,10 @@ function writeClickToOutputFile(x, y, success) {
 	outputText += ";" + lastHit;
 	outputText += ";" + x;
 	outputText += ";" + y;
-    outputText += ";" + "NaN"; // TODO difference between input and target center
+    outputText += ";" + distance;
 	outputText += ";" + success;
 	outputText += "\n";
+
 	lastHit = actualTime;
 }
 
