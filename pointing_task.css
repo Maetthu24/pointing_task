@@ -50,12 +50,12 @@ body {
 
 .top-bottom-button {
     height: 50px;
-    width: 150px;
+    width: 170px;
     margin: 0px 1px;
 }
 
 .left-right-button {
-    height: 150px;
+    height: 170px;
     width: 50px;
     margin: 1px 0px;
 }
@@ -122,12 +122,12 @@ body {
 
 .extended-top-bottom-button {
     height: 100px;
-    width: 150px;
+    width: 170px;
     margin: 0px 1px;
 }
 
 .extended-left-right-button {
-    height: 150px;
+    height: 170px;
     width: 100px;
     margin: 1px 0px;
 }
