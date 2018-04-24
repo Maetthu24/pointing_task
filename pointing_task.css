@@ -1,173 +1,165 @@
 body {
 	margin: 0px;
-	/*height: 100%;*/
-    position: absolute;
-    top: 0px;
-    bottom: 30px;
-    left: 0px;
-    right: 0px;
+    height: 1000px;
 }
 
 .tablet-outer-edge {
 	position: absolute;
-	height: calc(100% - 100px);
-	width: calc(100% - 100px);
-	margin: 50px 50px;
+    top: 50px;
+    left: 50px;
+	height: 900px;
+	width: 1400px;
 	background-color: black;
 	border-radius: 30px;
 }
 
 .tablet-inner-edge {
 	position: absolute;
-	height: calc(90% - 12px);
-	width: 90%;
-	margin: 50px 5%;
+    top: 50px;
+    left: 50px;
+	height: 800px;
+	width: 1300px;
 	background-color: white;
 }
 
+.button {
+    background-color: #a5a5a5;
+}
+
 .top-buttons {
-	display: grid;
-	grid-template-columns: calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7);
-  	grid-gap: 2px;
-  	align-items: center;
-  	justify-content: center;
-  	margin: 0px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0px;
 }
 
 .bottom-buttons {
-    width: 100%;
-    height: 50px;
     position: absolute;
-    bottom: 0px;
-    display: grid;
-	grid-template-columns: calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7);
-	grid-gap: 2px;
-    align-items: center;
+    top: 750px;
+    left: 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     margin: 0px;
 }
 
-.center-buttons-left {
-    width: 50px;
-    height: 100px;
-    position: absolute;
-    margin-top: 10px;
-    margin-left: 0px;
-    margin-bottom: 10px;
-    align-items: left;
-    justify-content: left;
-	vertical-align: middle;
-	float: left;
-    top: 100px;
-}
-
-.center-buttons-left :first-child {
-    margin-top: 10px;
-}
-
-.centeredButton {
-    background-color: #a5a5a5;
-    text-align: center;
-    height: 120px;
-    line-height: 120px;
-    vertical-align: middle;
-    margin-bottom: 2px;
-}
-
-.center-buttons-right {
-    width: 50px;
-    height: 100px;
-    position: static;
-    margin-top: 30px;
-    margin-bottom: 10px;
-    margin-right: 0px;
-    align-items: right;
-    justify-content: right;
-    vertical-align: middle;
-    float: right;
-    top: 100px;
-}
-
-.center-buttons-right :first-child {
-    margin-top: 25px;
-}
-
-.middle-buttons {
-    width: 100%;
+.top-bottom-button {
     height: 50px;
+    width: 150px;
+    margin: 0px 1px;
+}
+
+.left-right-button {
+    height: 150px;
+    width: 50px;
+    margin: 1px 0px;
+}
+
+.left-buttons {
     position: absolute;
-    bottom: 50%;
-    display: grid;
-    grid-template-columns: calc(100%/7);
-    grid-gap: 2px;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     margin: 0px;
 }
 
-.informations {
-    width: 100%;
-    text-align: center;
+.right-buttons {
+    position: absolute;
+    top: 0px;
+    left: 1250px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px;
 }
 
-.button {
-	background-color: #a5a5a5;
-	text-align: center;
-	height: 50px;
-	line-height: 50px;
-	vertical-align: middle;
+#but-start {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    border-radius: 50%;
+    margin: -50px 0 0 -50px;
 }
 
 .extended-top-buttons {
     position: absolute;
-    top: -100px;
-    z-index: 100;
-    width: 100%;
-    display: grid;
-    grid-template-columns: calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7);
-    grid-gap: 2px;
+    top: 0px;
+    left: 100px;
+    width: 1300px;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
-    margin: 0;
-}
-
-.extended-top-button {
-    background-color: orange;
-    height: 100px;
-    opacity: 0.5;
+    margin: 0px;
 }
 
 .extended-bottom-buttons {
     position: absolute;
-    bottom: -100px;
-    z-index: 100;
-    width: 100%;
-    display: grid;
-    grid-template-columns: calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7);
-    grid-gap: 2px;
+    top: 900px;
+    left: 100px;
+    width: 1300px;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
-    margin: 0;
+    margin: 0px;
 }
 
-.extended-bottom-button {
+.ext-button {
     background-color: orange;
-    height: 100px;
     opacity: 0.5;
 }
 
-.circle {
-    border-radius: 50%;
-    background-color: white;
-    text-align: center;
-    width: 100px;
+.extended-top-bottom-button {
     height: 100px;
-    vertical-align: middle;
+    width: 150px;
+    margin: 0px 1px;
+}
+
+.extended-left-right-button {
+    height: 150px;
+    width: 100px;
+    margin: 1px 0px;
+}
+
+.extended-left-buttons {
+    position: absolute;
+    top: 100px;
+    left: 0px;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px;
+}
+
+.extended-right-buttons {
+    position: absolute;
+    top: 100px;
+    left: 1400px;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px;
 }
 
 .target {
-	background-color: red;
+	background-color: red !important;
 }
 
 .start {
-    background-color: green;
+    background-color: green !important;
 }
 
 .hide {

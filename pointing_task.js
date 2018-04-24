@@ -17,7 +17,12 @@ var experiment = [
 
 var participant = 0; //prompt("Enter Participant ID:", "0"); //id of the participant
 // Have to get set according to an input file and the participant id
-var condition = 0; // prompt("Enter condition: 0 = screen edge, 1 = extended edge") //screen edge or not, out of input file
+
+const REGULAR_EDGE = 0;
+const VIRTUAL_EDGE = 1;
+
+var condition = VIRTUAL_EDGE; // virtual edge or not, read from input file
+
 var block = 0; // id of the sequence
 
 //Header of the output file
@@ -40,7 +45,6 @@ document.body.addEventListener("click", handleBodyClick);
 function handleBodyClick(event) {
 
 	var clickedElement = document.elementFromPoint(event.clientX, event.clientY);
-	console.log("click registered at " + event.clientX + "/" + event.clientY);
 
 	if(isBetweenBlocks) {
 
@@ -54,9 +58,11 @@ function handleBodyClick(event) {
 
 	} else {
 
-		removeOldTarget();
+		var success = getSuccessFlagForClickAt(event.clientX, event.clientY);
 
-		writeClickToOutputFile(event.clientX, event.clientY, "1");
+		writeClickToOutputFile(event.clientX, event.clientY, success);
+
+		removeOldTarget();
 
 		if(experimentIsFinished()) {
 			document.body.removeEventListener("click", handleBodyClick);
@@ -69,6 +75,43 @@ function handleBodyClick(event) {
 
 	}
 	
+}
+
+function getSuccessFlagForClickAt(x, y) {
+
+	var targetElement = getCurrentTargetElement();
+	var targetRect = targetElement.getBoundingClientRect();
+
+	var xInsideBounds, yInsideBounds;
+
+	if(condition == REGULAR_EDGE || targetElement.id == "but-start") {
+
+		xInsideBounds = x >= targetRect.left && x <= targetRect.right;
+		yInsideBounds = y >= targetRect.top && y <= targetRect.bottom;
+
+	} else if(condition == VIRTUAL_EDGE) {
+
+		var extendedButtonId = "ext-" + targetElement.id
+		var extendedButtonRect = document.querySelector("#" + extendedButtonId).getBoundingClientRect();
+
+		xInsideBounds = (x >= targetRect.left && x <= targetRect.right) || (x >= extendedButtonRect.left && x <= extendedButtonRect.right);
+	 	yInsideBounds = (y >= targetRect.top && y <= targetRect.bottom) || (y >= extendedButtonRect.top && y <= extendedButtonRect.bottom);
+
+	} else {
+		// Unkown condition, shouldn't happen
+		return "-1"
+	}
+
+	if(xInsideBounds && yInsideBounds) {
+		return "1";
+	} else {
+		return "0";
+	}
+	
+}
+
+function getCurrentTargetElement() {
+	return document.querySelector(".target");
 }
 
 function experimentIsFinished() {
