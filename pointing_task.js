@@ -136,7 +136,7 @@ function blockIsFinished() {
 function startNewBlock() {
 	block += 1;
 	clicksCounter = 0;
-	setTimeout(highlightStart, 2000);
+	setTimeout(highlightStart, 1000);
 }
 
 function writeClickToOutputFile(x, y) {
