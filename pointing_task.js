@@ -6,17 +6,17 @@ var experiment = [
 	[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
     [1,11,6,16],
     [20,10,17,7],
-	[2,3,4,5],
-	[15,14,13,12],
-	[20,19,18,17],
-	[7,8,9,10],
-	[1,16,2,15],
-	[11,6,12,5],
-	[20,7,19,8],
-	[10,17,9,18]
+    [2,3,4,5],
+    [15,14,13,12],
+    [20,19,18,17],
+    [7,8,9,10],
+    [1,16,2,15],
+    [11,6,12,5],
+    [20,7,19,8],
+    [10,17,9,18]
 ]
 
-var participant = 0; //prompt("Enter Participant ID:", "0"); //id of the participant
+var participant = prompt("Enter Participant ID:", "0"); //id of the participant
 // Have to get set according to an input file and the participant id
 
 const REGULAR_EDGE = 0;
@@ -32,7 +32,7 @@ var outputText = "Part;Cond;Block;Click;Tar_t;Click_t;PosX;PosY;Dist;Succ\n";
 // Clicks performed in the actual sequence
 var clicksCounter = 0;
 
-// Temporarly saves the last hit for calculating the difference
+// Temporarily saves the last hit for calculating the difference
 var lastHit = getActualTime();
 
 var isBetweenBlocks = true;
@@ -53,6 +53,7 @@ function handleBodyClick(event) {
 		if(clickedElement == startButton) {
 			startButton.classList.remove("start");
 			startButton.classList.remove("target");
+			lastHit = getActualTime();
 			isBetweenBlocks = false;
 			highlightNextTarget();
 		}
