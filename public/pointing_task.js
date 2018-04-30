@@ -52,6 +52,14 @@ var lastHit = getActualTime();
 
 var isBetweenBlocks = true;
 
+var configuration;
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetch("http://localhost:3000/configuration").then(response => response.json()).then((data) => {
+        configuration = data;
+    })
+}, false);
+
 // Highlite the start button at the beginning
 highlightStart();
 hideFail();
@@ -96,7 +104,7 @@ function handleBodyClick(event) {
         } else if (blockIsFinished()) {
             highlightEndButtonOrStartNewBlock();
             readNextSetting();
-            if(endButtonHighlighted == false){
+            if(endButtonHighlighted === false){
                 showModal("myModal");
             }
         } else {
