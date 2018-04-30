@@ -77,17 +77,7 @@ function handleBodyClick(event) {
 
 
         writeClickToOutputFile(event.clientX, event.clientY);
-
-		// If user is currently between 2 experiment blocks, only react to start button
-		if(clickedElement == startButton) {
-			startButton.classList.remove("start");
-			startButton.classList.remove("target");
-			lastHit = getActualTime();
-			isBetweenBlocks = false;
-			highlightNextTarget();
-		}
-
-
+        
         removeOldTarget();
 
         if (experimentIsFinished()) {
