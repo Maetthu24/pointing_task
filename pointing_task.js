@@ -299,6 +299,7 @@ function highlightStart() {
     startButton.classList.remove("hide");
     startButton.classList.add("target");
     startButton.classList.add("start");
+    hideFail();
 }
 
 
