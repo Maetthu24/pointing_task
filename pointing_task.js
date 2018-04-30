@@ -225,6 +225,7 @@ var endButtonHighlighted = false;
 function highlightEndButtonOrStartNewBlock() {
 
 	if(!endButtonHighlighted) {
+	    clicksCounter += 1;
 		startButton.classList.add("target");
 		endButtonHighlighted = true;	
 	} else {
