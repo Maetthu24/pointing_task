@@ -3,6 +3,7 @@ var buttons = document.querySelectorAll('[id^=\'but\']');
 var startButton = document.querySelector('#but-start');
 
 var experiment = [
+
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
     [1, 11, 6, 16],
     [20, 10, 17, 7],
@@ -24,7 +25,8 @@ var training = [
     [17, 18, 19, 20]
 ];
 
-var participant = 0; //prompt("Enter Participant ID:", "0"); //id of the participant
+
+var participant = prompt("Enter Participant ID:", "0"); //id of the participant
 // Have to get set according to an input file and the participant id
 
 const REGULAR_EDGE = 0;
@@ -44,7 +46,7 @@ var outputText = "Part;Cond;Block;Click;Tar_t;Click_t;PosX;PosY;Dist;Succ\n";
 // Clicks performed in the actual sequence
 var clicksCounter = 0;
 
-// Temporarly saves the last hit for calculating the difference
+// Temporarily saves the last hit for calculating the difference
 var lastHit = getActualTime();
 
 var isBetweenBlocks = true;
@@ -71,7 +73,18 @@ function handleBodyClick(event) {
 
     } else {
 
+
         writeClickToOutputFile(event.clientX, event.clientY);
+
+		// If user is currently between 2 experiment blocks, only react to start button
+		if(clickedElement == startButton) {
+			startButton.classList.remove("start");
+			startButton.classList.remove("target");
+			lastHit = getActualTime();
+			isBetweenBlocks = false;
+			highlightNextTarget();
+		}
+
 
         removeOldTarget();
 
@@ -290,15 +303,18 @@ var endButtonHighlighted = false;
 
 function highlightEndButtonOrStartNewBlock() {
 
-    if (!endButtonHighlighted) {
-        startButton.classList.add("target");
-        endButtonHighlighted = true;
-    } else {
-        endButtonHighlighted = false;
-        isBetweenBlocks = true;
-        startButton.classList.add("hide");
-        startNewBlock();
-    }
+
+	if(!endButtonHighlighted) {
+	    clicksCounter += 1;
+		startButton.classList.add("target");
+		endButtonHighlighted = true;	
+	} else {
+		endButtonHighlighted = false;
+		isBetweenBlocks = true;
+		startButton.classList.add("hide");
+		startNewBlock();
+	}
+
 
 }
 
