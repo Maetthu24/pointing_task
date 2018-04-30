@@ -94,9 +94,11 @@ function handleBodyClick(event) {
             document.body.removeEventListener("click", handleBodyClick);
             downloadOutputFile();
         } else if (blockIsFinished()) {
-            showModal("myModal");
             highlightEndButtonOrStartNewBlock();
             readNextSetting();
+            if(endButtonHighlighted == false){
+                showModal("myModal");
+            }
         } else {
             highlightNextTarget();
         }
@@ -310,8 +312,10 @@ function highlightEndButtonOrStartNewBlock() {
 	if(!endButtonHighlighted) {
 	    clicksCounter += 1;
 		startButton.classList.add("target");
-		endButtonHighlighted = true;	
+		endButtonHighlighted = true;
+
 	} else {
+
 		endButtonHighlighted = false;
 		isBetweenBlocks = true;
 		startButton.classList.add("hide");
