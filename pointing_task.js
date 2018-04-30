@@ -1,6 +1,7 @@
 // Select all buttons
 var buttons = document.querySelectorAll('[id^=\'but\']');
 var startButton = document.querySelector('#but-start');
+var failInficator = document.querySelector('#fail-indicator');
 
 var experiment = [
 	[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
@@ -39,6 +40,7 @@ var isBetweenBlocks = true;
 
 // Highlite the start button at the beginning
 highlightStart();
+hideFail();
 
 // Add event listener to body
 document.body.addEventListener("click", handleBodyClick);
@@ -103,8 +105,10 @@ function getSuccessFlagForClickAt(x, y) {
 	}
 
 	if(xInsideBounds && yInsideBounds) {
+	    hideFail();
 		return "1";
 	} else {
+        failInficator.classList.remove("hide");
 		return "0";
 	}
 	
@@ -217,6 +221,7 @@ function highlightStart() {
 	startButton.classList.remove("hide");
     startButton.classList.add("target");
     startButton.classList.add("start");
+    hideFail();
 }
 
 
@@ -235,4 +240,8 @@ function highlightEndButtonOrStartNewBlock() {
 		startNewBlock();
 	}
 
+}
+
+function hideFail(){
+    failInficator.classList.add("hide")
 }

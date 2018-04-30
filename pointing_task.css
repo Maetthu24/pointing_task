@@ -204,3 +204,11 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
+
+.fail-indicator{
+    position: absolute;
+    top: 450px;
+    left: 450px;
+    font-size: 70px;
+    color: red;
+}
