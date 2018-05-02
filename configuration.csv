@@ -7,8 +7,8 @@ Trial_ID,Participant_ID,Edge_type,Pointing_Sequence
 6,1,Virtual Edge,5
 7,1,Virtual Edge,6
 8,1,Virtual Edge,1
-9,1,Virtual Edge,S8
-10,1,Virtual Edge,S3
+9,1,Virtual Edge,8
+10,1,Virtual Edge,3
 11,1,Regular Edge,7
 12,1,Regular Edge,9
 13,1,Regular Edge,10
