@@ -52,6 +52,22 @@ var lastHit = getActualTime();
 
 var isBetweenBlocks = true;
 
+var configuration;
+
+var settingParticipant= [];
+
+var sequence;
+
+var result;
+
+var set;
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetch("http://localhost:3000/configuration").then(response => response.json()).then((data) => {
+        configuration = data;
+    })
+}, false);
+
 // Highlite the start button at the beginning
 highlightStart();
 hideFail();
@@ -62,11 +78,14 @@ document.body.addEventListener("click", handleBodyClick);
 function handleBodyClick(event) {
 
     var clickedElement = document.elementFromPoint(event.clientX, event.clientY);
+    getSettingForParticipant();
+    experiment = result;
 
     if (isBetweenBlocks) {
 
         // If user is currently between 2 experiment blocks, only react to start button
         if (clickedElement == startButton) {
+            console.log(participant);
             startButton.classList.remove("start");
             startButton.classList.remove("target");
             isBetweenBlocks = false;
@@ -77,7 +96,7 @@ function handleBodyClick(event) {
 
 
         writeClickToOutputFile(event.clientX, event.clientY);
-        
+
         removeOldTarget();
 
         if (experimentIsFinished()) {
@@ -86,7 +105,7 @@ function handleBodyClick(event) {
         } else if (blockIsFinished()) {
             highlightEndButtonOrStartNewBlock();
             readNextSetting();
-            if(endButtonHighlighted == false){
+            if(endButtonHighlighted === false){
                 showModal("myModal");
             }
         } else {
@@ -110,6 +129,42 @@ function readNextSetting() {
             condition = VIRTUAL_EDGE;
         }
     }
+}
+
+
+function getSettingForParticipant(){
+    configuration.forEach(function (item) {
+        console.log('config: ', item);
+        settingParticipant = configuration.filter(element => {
+
+                return element.Participant_ID === participant;
+
+        })
+        console.log('setting:', settingParticipant)
+        getSequenceForParticipant();
+    })
+}
+
+function getSequenceForParticipant(){
+    sequence = settingParticipant.map(obj => obj.Pointing_Sequence);
+    console.log('sequence: ', sequence);
+
+    result = chunkArray(sequence, 4);
+    console.log('result', result);
+}
+
+function chunkArray(myArray, chunk_size) {
+    var index = 0;
+    var arrayLength = myArray.length;
+    var tempArray = [];
+
+    for (index = 0; index < arrayLength; index += chunk_size) {
+        myChunk = myArray.slice(index, index + chunk_size);
+        // Do something if you want with the group
+        tempArray.push(myChunk);
+    }
+
+    return tempArray;
 }
 
 function showModal(id) {
@@ -315,23 +370,6 @@ function highlightEndButtonOrStartNewBlock() {
 
 }
 
-function readCsvFile() {
-    var csv = $("#unparsedconfig").html();
-    console.log("getcsv");
-    console.log(csv);
-    var data = $.csv.toObjects(csv);
-    console.log(data);
-}
-
 function hideFail(){
     failInficator.classList.add("hide")
 }
-
-function highlightNextTrainingTarget() {
-    var buttonId = "but-" + training[block][clicksCounter];
-    var newTarget = document.querySelector("#" + buttonId);
-
-    newTarget.classList.add("target");
-}
-
-
