@@ -54,6 +54,12 @@ var isBetweenBlocks = true;
 
 var configuration;
 
+var settingParticipant= [];
+
+var sequence;
+
+var set;
+
 document.addEventListener('DOMContentLoaded', function() {
     fetch("http://localhost:3000/configuration").then(response => response.json()).then((data) => {
         configuration = data;
@@ -70,11 +76,14 @@ document.body.addEventListener("click", handleBodyClick);
 function handleBodyClick(event) {
 
     var clickedElement = document.elementFromPoint(event.clientX, event.clientY);
+    getSettingForParticipant();
+    experiment = sequence;
 
     if (isBetweenBlocks) {
 
         // If user is currently between 2 experiment blocks, only react to start button
         if (clickedElement == startButton) {
+            console.log(participant);
             startButton.classList.remove("start");
             startButton.classList.remove("target");
             isBetweenBlocks = false;
@@ -85,16 +94,6 @@ function handleBodyClick(event) {
 
 
         writeClickToOutputFile(event.clientX, event.clientY);
-
-		// If user is currently between 2 experiment blocks, only react to start button
-		if(clickedElement == startButton) {
-			startButton.classList.remove("start");
-			startButton.classList.remove("target");
-			lastHit = getActualTime();
-			isBetweenBlocks = false;
-			highlightNextTarget();
-		}
-
 
         removeOldTarget();
 
@@ -129,6 +128,27 @@ function readNextSetting() {
         }
     }
 }
+
+
+function getSettingForParticipant(){
+    configuration.forEach(function (item) {
+        console.log('config: ', item);
+        settingParticipant = configuration.filter(element => {
+
+                return element.Participant_ID === participant;
+
+        })
+        console.log('setting:', settingParticipant)
+        getSequenceForParticipant();
+    })
+}
+
+function getSequenceForParticipant(){
+    sequence = settingParticipant.map(obj => obj.Pointing_Sequence);
+    console.log('sequence: ', sequence);
+
+}
+
 
 function showModal(id) {
     var modal = document.getElementById(id);
