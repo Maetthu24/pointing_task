@@ -353,23 +353,10 @@ function highlightEndButtonOrStartNewBlock() {
 
 }
 
-function readCsvFile() {
-    var csv = $("#unparsedconfig").html();
-    console.log("getcsv");
-    console.log(csv);
-    var data = $.csv.toObjects(csv);
-    console.log(data);
-}
-
 function hideFail(){
     failInficator.classList.add("hide")
 }
 
-function highlightNextTrainingTarget() {
-    var buttonId = "but-" + training[block][clicksCounter];
-    var newTarget = document.querySelector("#" + buttonId);
 
-    newTarget.classList.add("target");
-}
 
 
