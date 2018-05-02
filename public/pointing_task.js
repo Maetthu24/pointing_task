@@ -58,6 +58,8 @@ var settingParticipant= [];
 
 var sequence;
 
+var result;
+
 var set;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -77,7 +79,7 @@ function handleBodyClick(event) {
 
     var clickedElement = document.elementFromPoint(event.clientX, event.clientY);
     getSettingForParticipant();
-    experiment = sequence;
+    experiment = result;
 
     if (isBetweenBlocks) {
 
@@ -147,8 +149,23 @@ function getSequenceForParticipant(){
     sequence = settingParticipant.map(obj => obj.Pointing_Sequence);
     console.log('sequence: ', sequence);
 
+    result = chunkArray(sequence, 4);
+    console.log('result', result);
 }
 
+function chunkArray(myArray, chunk_size) {
+    var index = 0;
+    var arrayLength = myArray.length;
+    var tempArray = [];
+
+    for (index = 0; index < arrayLength; index += chunk_size) {
+        myChunk = myArray.slice(index, index + chunk_size);
+        // Do something if you want with the group
+        tempArray.push(myChunk);
+    }
+
+    return tempArray;
+}
 
 function showModal(id) {
     var modal = document.getElementById(id);
