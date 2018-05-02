@@ -1,74 +1,101 @@
-// Select all buttons
-var buttons = document.querySelectorAll('[id^=\'but\']');
+// Select buttons
+
 var startButton = document.querySelector('#but-start');
 var failIndicator = document.querySelector('#fail-indicator');
 
-var experiment = [
+//--------------------------------------------------------------------------------------------------------------------
 
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-    [1, 11, 6, 16],
-    [20, 10, 17, 7],
-    [2, 3, 4, 5],
-    [15, 14, 13, 12],
-    [20, 19, 18, 17],
-    [7, 8, 9, 10],
-    [1, 16, 2, 15],
-    [11, 6, 12, 5],
-    [20, 7, 19, 8],
-    [10, 17, 9, 18]
+// Hard-coded sequences
+
+var demoSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+var sequences = [
+    [1, 11, 6, 16], // S1
+    [20, 10, 17, 7], // S2
+    [2, 3, 4, 5], // S3
+    [15, 14, 13, 12], // S4
+    [20, 19, 18, 17], // S5
+    [7, 8, 9, 10], // S6
+    [1, 16, 2, 15], // S7
+    [11, 6, 12, 5], // S8
+    [20, 7, 19, 8], // S9
+    [10, 17, 9, 18] // S10
 ];
 
-var training = [
-    [1, 2, 3, 4],
-    [5, 6, 7, 8],
-    [9, 10, 11, 12],
-    [13, 14, 15, 16],
-    [17, 18, 19, 20]
-];
+//--------------------------------------------------------------------------------------------------------------------
 
-var participant = prompt("Enter Participant ID:", "1"); //id of the participant
-// Have to get set according to an input file and the participant id
-
-const REGULAR_EDGE = 0;
-const VIRTUAL_EDGE = 1;
-
-var condition = VIRTUAL_EDGE; // virtual edge or not, read from input file
+// Variables
 
 var blockIdStorage = -1;
 
 var conditionCounter = 0;
 
-var block = 0; // id of the sequence
+var outputText = "Part;Cond;Block;Click;Tar_t;Click_t;PosX;PosY;Dist;Succ\n"; //Header of the output file
 
-//Header of the output file
-var outputText = "Part;Cond;Block;Click;Tar_t;Click_t;PosX;PosY;Dist;Succ\n";
-
-// Clicks performed in the actual sequence
-var clicksCounter = 0;
-
-// Temporarily saves the last hit for calculating the difference
-var lastHit = getActualTime();
-
-var isBetweenBlocks = true;
+var lastHit; // Temporarily saves the last hit for calculating the difference
 
 var configuration;
 
-var settingParticipant= [];
+var isBetweenBlocks = true;
 
-var sequence;
+var endButtonHighlighted = false;
 
-var result;
+var participantID;
 
-var set;
+var participantTrials;
 
+var block = 0;
+
+var clicksCounter = 0; // Clicks performed in the current sequence
+
+const REGULAR_EDGE = "Regular Edge";
+const VIRTUAL_EDGE = "Virtual Edge";
+
+var experiment = [];
+var condition = [];
+
+//--------------------------------------------------------------------------------------------------------------------
+
+// Load the configuration as soon as the page has loaded
 document.addEventListener('DOMContentLoaded', function() {
     fetch("http://localhost:3000/configuration").then(response => response.json()).then((data) => {
         configuration = data;
+
+        // After successfully reading the configuration, query the user for a participant ID and get the according trials
+        participantID = getParticipantID();
+        participantTrials = getParticipantTrials(participantID);
+
+        setupExperiment();
     })
 }, false);
 
-// Highlight the start button at the beginning
-highlightStart();
+// Get a valid participant id as input
+function getParticipantID() {
+    var id = prompt("Enter Participant ID between 1 and 10:", "1");
+    while (Number.isNaN(parseInt(id)) || id < 1 || id > 10) {
+        id = prompt("Please enter a valid Participant ID (between 1 and 10):", "1");
+    }
+    return id;
+}
+
+// Filter the config to only contain trials of the specified participant ID
+function getParticipantTrials(id) {
+    return configuration.filter(element => {
+        return element.Participant_ID === id;
+    });
+}
+
+function setupExperiment() {
+    experiment[0] = demoSequence;
+    condition[0] = REGULAR_EDGE;
+
+    var i;
+    for (i = 0; i < participantTrials.length; i++) {
+        let sequence = sequences[parseInt(participantTrials[i].Pointing_Sequence) - 1];
+        experiment[i + 1] = sequence;
+        condition[i + 1] = participantTrials[i].Edge_type;
+    }
+}
 
 // Add event listener to body
 document.body.addEventListener("click", handleBodyClick);
@@ -76,35 +103,36 @@ document.body.addEventListener("click", handleBodyClick);
 function handleBodyClick(event) {
 
     var clickedElement = document.elementFromPoint(event.clientX, event.clientY);
-    getSettingForParticipant();
-    experiment = result;
 
     if (isBetweenBlocks) {
 
         // If user is currently between 2 experiment blocks, only react to start button
         if (clickedElement == startButton) {
-            console.log(participant);
             startButton.classList.remove("start");
             startButton.classList.remove("target");
             isBetweenBlocks = false;
+            lastHit = getActualTime();
             highlightNextTarget();
         }
 
     } else {
 
-
         writeClickToOutputFile(event.clientX, event.clientY);
+        clicksCounter += 1;
 
         removeOldTarget();
 
-        if (experimentIsFinished()) {
-            document.body.removeEventListener("click", handleBodyClick);
-            downloadOutputFile();
+        if (blockIsFinished() && !endButtonHighlighted) {
+            highlightEndButton();
         } else if (blockIsFinished()) {
-            highlightEndButtonOrStartNewBlock();
-            readNextSetting();
-            if(endButtonHighlighted === false){
-                showModal("myModal");
+            if (experimentIsFinished()) {
+                document.body.removeEventListener("click", handleBodyClick);
+                downloadOutputFile();
+            } else {
+                endButtonHighlighted = false;
+                isBetweenBlocks = true;
+                startButton.classList.add("hide");
+                startNewBlock();
             }
         } else {
             highlightNextTarget();
@@ -114,83 +142,9 @@ function handleBodyClick(event) {
 
 }
 
-function readNextSetting() {
-    if(conditionCounter === 3){
-        blockIdStorage = block;
-        block = 0;
-        clicksCounter = 0;
-        conditionCounter = 0;
-        if(condition === VIRTUAL_EDGE){
-            condition = REGULAR_EDGE;
-        }
-        else{
-            condition = VIRTUAL_EDGE;
-        }
-    }
-}
 
-
-function getSettingForParticipant() {
-    configuration.forEach(function (item) {
-        console.log('config: ', item);
-        settingParticipant = configuration.filter(element => {
-
-                return element.Participant_ID === participant;
-
-        })
-        console.log('setting:', settingParticipant);
-        getSequenceForParticipant();
-    })
-}
-
-function getSequenceForParticipant() {
-    sequence = settingParticipant.map(obj => obj.Pointing_Sequence);
-    console.log('sequence: ', sequence);
-
-    result = chunkArray(sequence, 4);
-    console.log('result', result);
-}
-
-function chunkArray(myArray, chunk_size) {
-    var index = 0;
-    var arrayLength = myArray.length;
-    var tempArray = [];
-
-    for (index = 0; index < arrayLength; index += chunk_size) {
-        myChunk = myArray.slice(index, index + chunk_size);
-        // Do something if you want with the group
-        tempArray.push(myChunk);
-    }
-
-    return tempArray;
-}
-
-function showModal(id) {
-    var modal = document.getElementById(id);
-
-    var blockoutput = modal.getElementsByClassName("blockoutput")[0];
-
-    var paragraph = document.createElement("p");
-    var textNode = document.createTextNode("Condition: " + condition + "\nBlock: " + block + "\nLast hit: " + lastHit);
-    paragraph.appendChild(textNode);
-    if (blockoutput.childNodes.length <= 0) {
-        blockoutput.appendChild(paragraph);
-    }
-    else {
-        blockoutput.replaceChild(paragraph, blockoutput.firstChild);
-    }
-
-    modal.style.display = "block";
-
-    var span = modal.getElementsByClassName("close")[0];
-    span.onclick = function () {
-        hideModal(modal)
-    };
-}
-
-function hideModal(modal) {
-    modal.style.display = "none";
-}
+// Highlight the start button at the beginning
+highlightStart();
 
 function getSuccessFlagForClickAt(x, y) {
 
@@ -199,12 +153,12 @@ function getSuccessFlagForClickAt(x, y) {
 
     var xInsideBounds, yInsideBounds;
 
-    if (condition == REGULAR_EDGE || targetElement.id == "but-start") {
+    if (condition[block] == REGULAR_EDGE || targetElement.id == "but-start") {
 
         xInsideBounds = x >= targetRect.left && x <= targetRect.right;
         yInsideBounds = y >= targetRect.top && y <= targetRect.bottom;
 
-    } else if (condition == VIRTUAL_EDGE) {
+    } else if (condition[block] == VIRTUAL_EDGE) {
 
         var extendedButtonId = "ext-" + targetElement.id
         var extendedButtonRect = document.querySelector("#" + extendedButtonId).getBoundingClientRect();
@@ -221,14 +175,13 @@ function getSuccessFlagForClickAt(x, y) {
 	    hideFail();
 		return "1";
 	} else {
-	    failInficator.classList.remove("hide");
+	    failIndicator.classList.remove("hide");
 		return "0";
 	}
 	
 }
 
 function getDistanceToTargetCenter(x, y) {
-
     var targetRect = getCurrentTargetElement().getBoundingClientRect();
     var targetCenterX = targetRect.left + targetRect.width / 2;
     var targetCenterY = targetRect.top + targetRect.height / 2;
@@ -237,7 +190,6 @@ function getDistanceToTargetCenter(x, y) {
     var distance = Math.sqrt(distanceSquared);
 
     return distance;
-
 }
 
 function getCurrentTargetElement() {
@@ -255,17 +207,7 @@ function blockIsFinished() {
 function startNewBlock() {
 	block += 1;
 	clicksCounter = 0;
-	setTimeout(highlightStart, 1000);
-    if (blockIdStorage !== -1) {
-        block = blockIdStorage;
-        blockIdStorage = -1;
-    }
-    block += 1;
-    clicksCounter = 0;
-    conditionCounter +=1;
-    console.log('counter'+conditionCounter);
-
-    setTimeout(highlightStart, 2000);
+    setTimeout(highlightStart, 1500);
 }
 
 function writeClickToOutputFile(x, y) {
@@ -273,12 +215,12 @@ function writeClickToOutputFile(x, y) {
     var success = getSuccessFlagForClickAt(x, y);
     var distance = getDistanceToTargetCenter(x, y);
 
-    outputText += participant;
-    outputText += ";" + condition;
+    outputText += participantID;
+    outputText += ";" + condition[block];
     outputText += ";" + block;
-    outputText += ";" + clicksCounter;
-    outputText += ";" + actualTime;
+    outputText += ";" + (clicksCounter + 1);
     outputText += ";" + lastHit;
+    outputText += ";" + actualTime;
     outputText += ";" + x;
     outputText += ";" + y;
     outputText += ";" + distance;
@@ -294,10 +236,9 @@ function downloadOutputFile() {
 
 // Copied from https://thiscouldbebetter.wordpress.com/2012/12/18/loading-editing-and-saving-a-text-file-in-html5-using-javascrip/
 function saveTextAsFile(textToSave) {
-
     var textToSaveAsBlob = new Blob([textToSave], {type: "text/plain"});
     var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-    var fileNameToSaveAs = "pointing_" + participant + ".csv";
+    var fileNameToSaveAs = "pointing_" + participantID + ".csv";
 
     var downloadLink = document.createElement("a");
     downloadLink.download = fileNameToSaveAs;
@@ -335,9 +276,7 @@ function removeOldTarget() {
 function highlightNextTarget() {
     var buttonId = "but-" + experiment[block][clicksCounter];
     var newTarget = document.querySelector("#" + buttonId);
-
     newTarget.classList.add("target");
-    clicksCounter += 1;
 }
 
 function highlightStart() {
@@ -347,25 +286,9 @@ function highlightStart() {
     hideFail();
 }
 
-
-var endButtonHighlighted = false;
-
-function highlightEndButtonOrStartNewBlock() {
-
-	if(!endButtonHighlighted) {
-	    clicksCounter += 1;
-		startButton.classList.add("target");
-		endButtonHighlighted = true;
-
-	} else {
-
-		endButtonHighlighted = false;
-		isBetweenBlocks = true;
-		startButton.classList.add("hide");
-		startNewBlock();
-	}
-
-
+function highlightEndButton() {
+    startButton.classList.add("target");
+    endButtonHighlighted = true;
 }
 
 function hideFail() {
