@@ -333,7 +333,7 @@ function removeOldTarget() {
     }
 }
 
-// Highlites the next target in the serie
+// Highlights the next target in the series
 function highlightNextTarget() {
     var buttonId = "but-" + experiment[block][clicksCounter];
     var newTarget = document.querySelector("#" + buttonId);

@@ -206,7 +206,7 @@ body {
 }
 .fail-indicator{
     position: absolute;
-    top: 450px;
+    top: 550px;
     left: 450px;
     font-size: 70px;
     color: red;
