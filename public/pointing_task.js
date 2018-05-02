@@ -373,7 +373,3 @@ function highlightEndButtonOrStartNewBlock() {
 function hideFail(){
     failInficator.classList.add("hide")
 }
-
-
-
-
