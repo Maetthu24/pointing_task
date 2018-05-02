@@ -204,7 +204,8 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
-.fail-indicator{
+
+.fail-indicator {
     position: absolute;
     top: 550px;
     left: 450px;

@@ -1,7 +1,7 @@
 // Select all buttons
 var buttons = document.querySelectorAll('[id^=\'but\']');
 var startButton = document.querySelector('#but-start');
-var failInficator = document.querySelector('#fail-indicator');
+var failIndicator = document.querySelector('#fail-indicator');
 
 var experiment = [
 
@@ -26,8 +26,7 @@ var training = [
     [17, 18, 19, 20]
 ];
 
-
-var participant = prompt("Enter Participant ID:", "0"); //id of the participant
+var participant = prompt("Enter Participant ID:", "1"); //id of the participant
 // Have to get set according to an input file and the participant id
 
 const REGULAR_EDGE = 0;
@@ -68,9 +67,8 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 }, false);
 
-// Highlite the start button at the beginning
+// Highlight the start button at the beginning
 highlightStart();
-hideFail();
 
 // Add event listener to body
 document.body.addEventListener("click", handleBodyClick);
@@ -132,7 +130,7 @@ function readNextSetting() {
 }
 
 
-function getSettingForParticipant(){
+function getSettingForParticipant() {
     configuration.forEach(function (item) {
         console.log('config: ', item);
         settingParticipant = configuration.filter(element => {
@@ -140,12 +138,12 @@ function getSettingForParticipant(){
                 return element.Participant_ID === participant;
 
         })
-        console.log('setting:', settingParticipant)
+        console.log('setting:', settingParticipant);
         getSequenceForParticipant();
     })
 }
 
-function getSequenceForParticipant(){
+function getSequenceForParticipant() {
     sequence = settingParticipant.map(obj => obj.Pointing_Sequence);
     console.log('sequence: ', sequence);
 
@@ -370,6 +368,6 @@ function highlightEndButtonOrStartNewBlock() {
 
 }
 
-function hideFail(){
-    failInficator.classList.add("hide")
+function hideFail() {
+    failIndicator.classList.add("hide");
 }
