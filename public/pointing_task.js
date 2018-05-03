@@ -98,25 +98,25 @@ function setupExperiment() {
 }
 
 // Add event listener to body
+startButton.addEventListener("mouseup", handleStartClick);
 document.body.addEventListener("click", handleBodyClick);
+
+
+function handleStartClick() {
+    if(startButton.classList.contains("start")) {
+        startButton.classList.remove("start");
+        startButton.classList.remove("target");
+        isBetweenBlocks = false;
+        lastHit = getActualTime();
+        highlightNextTarget();
+    }
+}
 
 function handleBodyClick(event) {
 
     var clickedElement = document.elementFromPoint(event.clientX, event.clientY);
 
-    if (isBetweenBlocks) {
-
-        // If user is currently between 2 experiment blocks, only react to start button
-        if (clickedElement == startButton) {
-            startButton.classList.remove("start");
-            startButton.classList.remove("target");
-            isBetweenBlocks = false;
-            lastHit = getActualTime();
-            highlightNextTarget();
-        }
-
-    } else {
-
+    if (!(isBetweenBlocks) && (clickedElement != startButton || clicksCounter >= 1)) {
         writeClickToOutputFile(event.clientX, event.clientY);
         clicksCounter += 1;
 
