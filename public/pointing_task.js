@@ -260,7 +260,7 @@ function destroyClickedElement(event) {
 
 function getActualTime() {
     var date = new Date();
-    return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds());
+    return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "." + date.getMilliseconds());
 }
 
 function removeOldTarget() {
