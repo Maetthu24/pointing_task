@@ -88,7 +88,9 @@ function getParticipantTrials(id) {
 function setupExperiment() {
     experiment[0] = demoSequence;
     condition[0] = REGULAR_EDGE;
-
+    alert("The screen reacts on different conditions of touch inputs. Please try out the behaviour of the " +
+        "application by touching the highlighted element. Make also a conscious fault to experience " +
+        "the behaviour of the application");
     var i;
     for (i = 0; i < participantTrials.length; i++) {
         let sequence = sequences[parseInt(participantTrials[i].Pointing_Sequence) - 1];
