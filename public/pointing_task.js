@@ -30,7 +30,7 @@ var blockIdStorage = -1;
 
 var conditionCounter = 0;
 
-var outputText = "Part;Cond;Block;Click;Tar_t;Click_t;PosX;PosY;Dist;Succ\n"; //Header of the output file
+var outputText = "Part;Cond;Block;Click;Rep;Tar_t;Click_t;PosX;PosY;Dist;Succ\n"; //Header of the output file
 
 var lastHit; // Temporarily saves the last hit for calculating the difference
 
@@ -237,11 +237,24 @@ function writeClickToOutputFile(x, y) {
     var actualTime = getActualTime();
     var success = getSuccessFlagForClickAt(x, y);
     var distance = getDistanceToTargetCenter(x, y);
+    if(block == 0 || block == 31){
+        var repetition = "demo";
+    }
+    else if (block%31 <= 10 ){
+        var repetition = 1;
+    }
+    else if (block%31 <= 20 ){
+        var repetition = 2;
+    }
+    else {
+        var repetition = 3;
+    }
 
     outputText += participantID;
     outputText += ";" + condition[block];
     outputText += ";" + block;
     outputText += ";" + (clicksCounter + 1);
+    outputText += ";" + repetition;
     outputText += ";" + lastHit;
     outputText += ";" + actualTime;
     outputText += ";" + x;
