@@ -86,16 +86,34 @@ function getParticipantTrials(id) {
 }
 
 function setupExperiment() {
+    // Each participant has 30 trials per condition. Before each of these 30 trials,
+    // a demo sequence is inserted with the respective condition.
+    const trialsPerCondition = 30;
+
+    var firstCondition = participantTrials[0].Edge_type, secondCondition = participantTrials[trialsPerCondition].Edge_type;
+
     experiment[0] = demoSequence;
+    condition[0] = firstCondition;
+
     condition[0] = REGULAR_EDGE;
     alert("The screen reacts on different conditions of touch inputs. Please try out the behaviour of the " +
         "application by touching the highlighted element. Make also a conscious fault to experience " +
         "the behaviour of the application");
     var i;
-    for (i = 0; i < participantTrials.length; i++) {
+    for (i = 0; i < trialsPerCondition; i++) {
         let sequence = sequences[parseInt(participantTrials[i].Pointing_Sequence) - 1];
         experiment[i + 1] = sequence;
         condition[i + 1] = participantTrials[i].Edge_type;
+    }
+
+    experiment[trialsPerCondition + 1] = demoSequence;
+    condition[trialsPerCondition + 1] = secondCondition;
+
+    var j;
+    for (j = trialsPerCondition; j < trialsPerCondition * 2; j++) {
+        let sequence = sequences[parseInt(participantTrials[j].Pointing_Sequence) - 1];
+        experiment[j + 2] = sequence;
+        condition[j + 2] = participantTrials[j].Edge_type;
     }
 }
 
