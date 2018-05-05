@@ -26,10 +26,6 @@ var sequences = [
 
 // Variables
 
-var blockIdStorage = -1;
-
-var conditionCounter = 0;
-
 var outputText = "Part;Cond;Block;Click;Rep;Tar_t;Click_t;PosX;PosY;Dist;Succ\n"; //Header of the output file
 
 var lastHit; // Temporarily saves the last hit for calculating the difference
@@ -95,9 +91,10 @@ function setupExperiment() {
     experiment[0] = demoSequence;
     condition[0] = firstCondition;
 
-    alert("The screen reacts on different conditions of touch inputs. Please try out the behaviour of the " +
-        "application by touching the highlighted element. Make also a conscious fault to experience " +
+    alert("The screen reacts to different conditions of touch inputs. Please try out the behaviour of the " +
+        "application by touching the highlighted elements in the following demo sequence. Also make a conscious fault to experience " +
         "the behaviour of the application");
+
     var i;
     for (i = 0; i < trialsPerCondition; i++) {
         let sequence = sequences[parseInt(participantTrials[i].Pointing_Sequence) - 1];
