@@ -95,7 +95,6 @@ function setupExperiment() {
     experiment[0] = demoSequence;
     condition[0] = firstCondition;
 
-    condition[0] = REGULAR_EDGE;
     alert("The screen reacts on different conditions of touch inputs. Please try out the behaviour of the " +
         "application by touching the highlighted element. Make also a conscious fault to experience " +
         "the behaviour of the application");
@@ -227,6 +226,10 @@ function blockIsFinished() {
 function startNewBlock() {
 	block += 1;
 	clicksCounter = 0;
+	if(block == 31){
+	    alert("The input condition will now change. Please try out the new behaviour in the following demo sequence!")
+    }
+
     setTimeout(highlightStart, 1500);
 }
 
