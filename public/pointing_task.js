@@ -26,7 +26,7 @@ var sequences = [
 
 // Variables
 
-var outputText = "Part;Cond;Block;Click;Rep;Tar_t;Click_t;PosX;PosY;Dist;Succ\n"; //Header of the output file
+var outputText = "ID;Part;Cond;Block;Click;Rep;Tar_t;Click_t;PosX;PosY;Dist;Succ\n"; //Header of the output file
 
 var lastHit; // Temporarily saves the last hit for calculating the difference
 
@@ -41,6 +41,8 @@ var participantID;
 var participantTrials;
 
 var block = 0;
+
+var id = 0;
 
 var clicksCounter = 0; // Clicks performed in the current sequence
 
@@ -231,6 +233,7 @@ function startNewBlock() {
 }
 
 function writeClickToOutputFile(x, y) {
+    id = id +1;
     var actualTime = getActualTime();
     var success = getSuccessFlagForClickAt(x, y);
     var distance = getDistanceToTargetCenter(x, y);
@@ -246,8 +249,8 @@ function writeClickToOutputFile(x, y) {
     else {
         var repetition = 3;
     }
-
-    outputText += participantID;
+    outputText += id;
+    outputText += ";" + participantID;
     outputText += ";" + condition[block];
     outputText += ";" + block;
     outputText += ";" + (clicksCounter + 1);
